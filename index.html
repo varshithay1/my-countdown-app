@@ -3,83 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Click Countdown App</title>
+    <title>Aesthetic Countdown with Sound</title>
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --panel-bg: rgba(255, 255, 255, 0.45);
+            --panel-border: rgba(255, 255, 255, 0.4);
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --btn-primary: #667eea;
+            --btn-primary-hover: #764ba2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f7;
-            color: #1d1d1f;
+            color: var(--text-main);
+            overflow: hidden;
         }
 
-        .container {
+        /* Glassmorphism Container */
+        .glass-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
             text-align: center;
-            background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 90%;
+            max-width: 420px;
+            transition: all 0.3s ease;
         }
 
-        #counter {
-            font-size: 5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
+        /* Counter Styling */
+        .counter-display {
+            font-size: 6rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin: 1.5rem 0;
+            background: linear-gradient(45deg, #4a00e0, #8e2de2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-variant-numeric: tabular-nums;
+            line-height: 1;
         }
 
-        button {
-            background-color: #ff3b30;
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            font-size: 1.1rem;
+        /* Input Controls */
+        .setup-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .setup-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .start-input {
+            width: 100px;
+            padding: 0.6rem;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
             font-weight: 600;
-            border-radius: 8px;
+            color: var(--text-main);
+            text-align: center;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .start-input:focus {
+            border-color: var(--btn-primary);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+        }
+
+        /* Action Buttons */
+        .btn {
+            width: 100%;
+            padding: 1.1rem;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 16px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
         }
 
-        button:hover {
-            background-color: #e0352b;
+        .btn-count {
+            background: linear-gradient(135deg, var(--btn-primary) 0%, var(--btn-primary-hover) 100%);
+            color: white;
+            margin-bottom: 0.75rem;
         }
 
-        button:disabled {
-            background-color: #e5e5ea;
-            color: #aeaeaf;
+        .btn-count:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
+        }
+
+        .btn-count:active {
+            transform: translateY(0);
+        }
+
+        .btn-count:disabled {
+            background: #cbd5e1;
+            color: #94a3b8;
+            box-shadow: none;
+            transform: none;
             cursor: not-allowed;
+        }
+
+        .btn-reset {
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            padding: 0.5rem;
+            box-shadow: none;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+
+        .btn-reset:hover {
+            opacity: 1;
+            color: var(--text-main);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="counter">1000</div>
-        <button id="countBtn">Subtract 1</button>
+    <div class="glass-card">
+        <!-- Settings Panel -->
+        <div class="setup-group">
+            <label for="startValue">Start Value:</label>
+            <input type="number" id="startValue" class="start-input" value="1000" min="1">
+        </div>
+
+        <!-- Big Display -->
+        <div id="counter" class="counter-display">1000</div>
+
+        <!-- Core Actions -->
+        <button id="countBtn" class="btn btn-count">Count Down</button>
+        <button id="resetBtn" class="btn btn-reset">Reset Counter</button>
     </div>
 
     <script>
         const counterDisplay = document.getElementById('counter');
         const countButton = document.getElementById('countBtn');
+        const resetButton = document.getElementById('resetBtn');
+        const startValueInput = document.getElementById('startValue');
         
-        let count = 1000;
+        let count = parseInt(startValueInput.value, 10) || 1000;
 
-        countButton.addEventListener('click', () => {
-            // Decrease the number by 1
-            count--;
-            
-            // Update the webpage display
+        // Function to synthesize a clean, subtle chime sound via code
+        function playChime() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Note 1 (E5)
+                let osc1 = audioCtx.createOscillator();
+                let gain1 = audioCtx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(659.25, audioCtx.currentTime); // E5 note
+                gain1.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                osc1.connect(gain1);
+                gain1.connect(audioCtx.destination);
+                osc1.start();
+                osc1.stop(audioCtx.currentTime + 0.4);
+
+                // Note 2 (A5) slightly delayed for a pleasant chord chime
+                setTimeout(() => {
+                    let osc2 = audioCtx.createOscillator();
+                    let gain2 = audioCtx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(880.00, audioCtx.currentTime); // A5 note
+                    gain2.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.start();
+                    osc2.stop(audioCtx.currentTime + 0.6);
+                }, 80);
+
+            } catch (e) {
+                console.log("Audio not supported or blocked by browser policy");
+            }
+        }
+
+        function updateDisplay() {
             counterDisplay.textContent = count;
-
-            // Stop at 0 and disable the button
+            
             if (count <= 0) {
                 countButton.disabled = true;
-                countButton.textContent = "Reached 0";
+                countButton.textContent = "Done!";
+            } else {
+                countButton.disabled = false;
+                countButton.textContent = "Count Down";
             }
+        }
+
+        // Subtract 1 on click
+        countButton.addEventListener('click', () => {
+            if (count > 0) {
+                count--;
+                updateDisplay();
+                
+                // Trigger sound exactly when it reaches zero
+                if (count === 0) {
+                    playChime();
+                }
+            }
+        });
+
+        // Handle Custom Value Changes
+        startValueInput.addEventListener('input', () => {
+            let val = parseInt(startValueInput.value, 10);
+            if (isNaN(val) || val < 0) val = 0;
+            count = val;
+            updateDisplay();
+        });
+
+        // Reset Action
+        resetButton.addEventListener('click', () => {
+            let val = parseInt(startValueInput.value, 10);
+            if (isNaN(val) || val < 0) val = 1000;
+            count = val;
+            updateDisplay();
         });
     </script>
 
