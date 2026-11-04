@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Countdown App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        #counter {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        button {
+            background-color: #ff3b30;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #e0352b;
+        }
+
+        button:disabled {
+            background-color: #e5e5ea;
+            color: #aeaeaf;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="counter">1000</div>
+        <button id="countBtn">Subtract 1</button>
+    </div>
+
+    <script>
+        const counterDisplay = document.getElementById('counter');
+        const countButton = document.getElementById('countBtn');
+        
+        let count = 1000;
+
+        countButton.addEventListener('click', () => {
+            // Decrease the number by 1
+            count--;
+            
+            // Update the webpage display
+            counterDisplay.textContent = count;
+
+            // Stop at 0 and disable the button
+            if (count <= 0) {
+                countButton.disabled = true;
+                countButton.textContent = "Reached 0";
+            }
+        });
+    </script>
+
+</body>
+</html>
